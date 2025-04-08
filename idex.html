@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>World Clock</title>
+    <style>
+      /* Blue-Green Background */
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: linear-gradient(45deg, #4caf50, #1e88e5);
+        padding: 20px;
+        overflow: hidden;
+      }
+
+      /* Create a sparkling background effect */
+      @keyframes sparkle {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+      }
+
+      .sparkles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        background: url("https://cdn.pixabay.com/photo/2018/10/04/01/06/sparkles-3721217_960_720.png")
+          repeat;
+        animation: sparkle 1s infinite alternate;
+      }
+
+      /* Styling for the select dropdown */
+      select {
+        padding: 10px;
+        font-size: 16px;
+        cursor: url("https://cdn.pixabay.com/photo/2020/11/23/10/03/sparkler-5768959_960_720.png"),
+          auto; /* Sparkler cursor */
+        margin: 20px;
+        border-radius: 5px;
+      }
+
+      footer {
+        margin-top: 40px;
+        font-size: 1rem;
+        color: #555;
+      }
+
+      footer a {
+        text-decoration: none;
+        color: #007bff;
+      }
+
+      footer a:hover {
+        color: #0056b3;
+      }
+
+      /* Added styling for the "Back to World Clock" link */
+      .back-link {
+        font-size: 16px;
+        margin-top: 20px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>World Clock</h1>
+
+    <!-- Dropdown to select a city -->
+    <select id="cityDropdown">
+      <option value="Paris">Paris 🇫🇷</option>
+      <option value="Tokyo">Tokyo 🇯🇵</option>
+      <option value="Sydney">Sydney 🇦🇺</option>
+    </select>
+
+    <!-- Display clock -->
+    <div id="clock">Select a city to see the time</div>
+
+    <div class="back-link">
+      <a href="https://www.timeanddate.com/worldclock/" target="_blank"
+        >Visit World Clock Homepage</a
+      >
+    </div>
+
+    <footer>
+      Created with ❤️ by Tori<br />
+      <a href="https://github.com" target="_blank">View on GitHub</a>
+    </footer>
+
+    <!-- Sparkles Layer -->
+    <div class="sparkles"></div>
+
+    <script>
+      // List of cities and their respective timezones (in UTC offset)
+      const timezones = {
+        Paris: "Europe/Paris",
+        Tokyo: "Asia/Tokyo",
+        Sydney: "Australia/Sydney",
+      };
+
+      // Function to update the time for the selected city
+      function updateTime() {
+        const city = document.getElementById("cityDropdown").value;
+        const timezone = timezones[city];
+
+        // Get current time in the selected timezone
+        const cityTime = new Date().toLocaleString("en-US", {
+          timeZone: timezone,
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        });
+
+        // Display the current date and time for the selected city
+        alert(`It is ${cityTime} in ${timezone}`);
+      }
+
+      // Function to get and display the user's local time
+      function getUserTime() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            const userLat = position.coords.latitude;
+            const userLon = position.coords.longitude;
+
+            // Get user's time zone using the latitude and longitude
+            const userTimezone =
+              Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+            const userTime = new Date().toLocaleString("en-US", {
+              timeZone: userTimezone,
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: true,
+            });
+
+            alert(`Your current time is ${userTime} in ${userTimezone}`);
+          });
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      }
+
+      // Event listener for dropdown change
+      document
+        .getElementById("cityDropdown")
+        .addEventListener("change", updateTime);
+
+      // Initial alert for user time when the page loads
+      getUserTime();
+    </script>
+  </body>
+</html>
